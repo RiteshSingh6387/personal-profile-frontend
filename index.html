@@ -1,0 +1,234 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Profile</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+    <div class="header-actions">
+        <div class="search-container">
+            <input type="text" id="searchBar" placeholder="Search skills, projects, etc..." />
+            <div id="results" class="results hidden"></div> <!-- results float here -->
+        </div>
+        <div class="action-buttons">
+            <button id="editBtn">Edit</button>
+            <button id="saveBtn">Save</button>
+        </div>
+    </div>
+        
+    
+    
+    <div id="profile"></div>
+    <div id="skillsContainer"></div>
+    <div class="hidden" id="addSkillContainer">
+        <input type="text" id="newSkill" placeholder="Add new skill">
+        <button id="addSkill">Add Skill</button>
+    </div>
+  
+    <div id="projects"></div>
+    <div class="hidden" id="addProjectContainer">
+        <input type="text" id="newProjectName" placeholder="Project Name">
+        <input type="text" id="newProjectLink" placeholder="Project Link">
+        <input type="text" id="newProjectDis" placeholder="Project Description">
+        <button id="addProject">Add Project</button>
+    </div>
+
+    <div id="workexperiance"></div>
+    <div class="hidden" id="addExperienceContainer">
+        <input type="text" id="newExperienceRole" placeholder="Role">
+        <input type="text" id="newExperienceCompany" placeholder="Company">
+        <input type="text" id="newExperienceDuration" placeholder="Duration">
+        <input type="text" id="newExperienceDetails" placeholder="Details">
+        <button id="addExperience">Add Experience</button>
+    </div>
+
+<script>
+    console.log("frontend base url", window.location.hostname);
+    // const API_BASE = window.location.hostname == "localhost" ? "http://127.0.0.1:8000" : window.location.origin;
+    API_BASE = "http://127.0.0.1:8000"
+    const API_URL = `${API_BASE}/api/profile/view`;
+    let profile = {};
+
+    async function loadProfile() {
+        const res = await fetch(API_URL);
+        profile = await res.json();
+        console.log(profile)
+        renderProfile();
+    }
+
+    function renderProfile() {
+        const skillsHTML = profile.skills.map((s, i) => `
+            <li>
+                <span class="editable">${s}</span>
+                <button class="delete-skill hidden" data-index="${i}">❌</button>
+            </li>
+        `).join("");
+
+        const projectsHTML = profile.projects.map((p, i) => `
+            <div class="project">
+                <strong class="editable">${p.name}</strong> [<a href="${p.link}" target="_blank">Link</a>]
+                <p class="editable">${p.desc}</p>
+                <button class="delete-project hidden" data-index="${i}">❌</button>
+            </div>
+        `).join("");
+
+        const experiencesHTML = profile.work_experience.map((e, i) => `
+            <div class="experience">
+                <strong class="editable">${e.role}</strong> - <strong class="editable">${e.company}</strong> (${e.duration})
+                <p class="editable">${e.details}</p>
+                <button class="delete-experience hidden" data-index="${i}">❌</button>
+            </div>
+        `).join("");
+
+        document.getElementById("profile").innerHTML = `
+            <p>Name: <span class="editable">${profile.name}</span></p>
+            <p>Email: <span class="editable">${profile.email}</span></p>
+            <p>Phone: <span class="editable">${profile.phone}</span></p>
+            <p>Education: <span class="editable">${profile.education}</span></p>
+        `;
+
+        document.getElementById("skillsContainer").innerHTML = `
+            <h3>Skills</h3>
+            <ul>${skillsHTML}</ul>
+        `;
+
+        document.getElementById("projects").innerHTML = `<h3>Projects</h3>${projectsHTML}`;
+        document.getElementById("workexperiance").innerHTML = `<h3>Work Experience</h3>${experiencesHTML}`;
+    }
+
+    // Add skill
+    document.getElementById("addSkill").addEventListener("click", () => {
+        const skillInput = document.getElementById("newSkill");
+        const skill = skillInput.value.trim();
+        if (skill) {
+            profile.skills.push(skill);
+            renderProfile();
+            skillInput.value = "";
+        }
+    });
+
+    // Add project
+    document.getElementById("addProject").addEventListener("click", () => {
+        const name = document.getElementById("newProjectName").value.trim();
+        const link = document.getElementById("newProjectLink").value.trim();
+        const desc = document.getElementById("newProjectDis").value.trim();
+        if (name && link && desc) {
+            profile.projects.push({ name, link, desc });
+            renderProfile();
+            document.getElementById("newProjectName").value = "";
+            document.getElementById("newProjectLink").value = "";
+            document.getElementById("newProjectDis").value = "";
+        }
+    });
+
+    // Add experience
+    document.getElementById("addExperience").addEventListener("click", () => {
+        const role = document.getElementById("newExperienceRole").value.trim();
+        const company = document.getElementById("newExperienceCompany").value.trim();
+        const duration = document.getElementById("newExperienceDuration").value.trim();
+        const details = document.getElementById("newExperienceDetails").value.trim();
+        if (role && company && duration && details) {
+            profile.work_experience.push({ role, company, duration, details });
+            renderProfile();
+            document.getElementById("newExperienceRole").value = "";
+            document.getElementById("newExperienceCompany").value = "";
+            document.getElementById("newExperienceDuration").value = "";
+            document.getElementById("newExperienceDetails").value = "";
+        }
+    });
+
+    // Toggle Edit/Save
+    const editBtn = document.getElementById("editBtn");
+    const saveBtn = document.getElementById("saveBtn");
+
+    editBtn.addEventListener("click", () => {
+        document.querySelectorAll(".editable").forEach(el => el.contentEditable = "true");
+        document.getElementById("addSkillContainer").classList.remove("hidden");
+        document.getElementById("addProjectContainer").classList.remove("hidden");
+        document.getElementById("addExperienceContainer").classList.remove("hidden");
+        document.querySelectorAll(".delete-skill, .delete-project, .delete-experience").forEach(btn => btn.classList.remove("hidden"));
+    });
+
+    saveBtn.addEventListener("click", async () => {
+        await fetch(`${API_BASE}/api/profile/update`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(profile)
+        });
+
+        document.querySelectorAll(".editable").forEach(el => el.contentEditable = "false");
+        document.getElementById("addSkillContainer").classList.add("hidden");
+        document.getElementById("addProjectContainer").classList.add("hidden");
+        document.getElementById("addExperienceContainer").classList.add("hidden");
+        document.querySelectorAll(".delete-skill, .delete-project, .delete-experience").forEach(btn => btn.classList.add("hidden"));
+
+        alert("Profile updated successfully!");
+    });
+
+    // Delete skill
+    document.addEventListener("click", e => {
+        if (e.target.classList.contains("delete-skill")) {
+            const i = e.target.getAttribute("data-index");
+            profile.skills.splice(i, 1);
+            renderProfile();
+        }
+    });
+
+    // Delete project
+    document.addEventListener("click", e => {
+        if (e.target.classList.contains("delete-project")) {
+            const i = e.target.getAttribute("data-index");
+            profile.projects.splice(i, 1);
+            renderProfile();
+        }
+    });
+
+    // Delete experience
+    document.addEventListener("click", e => {
+        if (e.target.classList.contains("delete-experience")) {
+            const i = e.target.getAttribute("data-index");
+            profile.work_experience.splice(i, 1);
+            renderProfile();
+        }
+    });
+
+    // Search functionality
+    const searchBar = document.getElementById("searchBar");
+    const resultsDiv = document.getElementById("results");
+
+    searchBar.addEventListener("input", () => {
+        const query = searchBar.value.trim().toLowerCase();
+        resultsDiv.innerHTML = "";
+
+        if (query === "") {
+            // resultsDiv.innerHTML = "<p>Type something to search...</p>";
+            // return;
+            resultsDiv.classList.add("hidden"); // Hide results div if search is empty
+            return;
+        }
+
+        const matchedSkills = profile.skills.filter(s => s.toLowerCase().includes(query));
+        const matchedProjects = profile.projects.filter(p => p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query));
+
+        if (matchedSkills.length > 0) {
+            resultsDiv.innerHTML += "<h3>Skills</h3><ul>" + matchedSkills.map(s => `<li>${s}</li>`).join("") + "</ul>";
+        }
+        if (matchedProjects.length > 0) {
+            resultsDiv.innerHTML += "<h3>Projects</h3>" + matchedProjects.map(p => `<div><strong>${p.name} [<a href="${p.link}" target="_blank">Link</a>]</strong><p>${p.desc}</p></div>`).join("");
+        }
+        if (matchedSkills.length === 0 && matchedProjects.length === 0) {
+            // resultsDiv.innerHTML = "<p>No results found</p>";
+            resultsDiv.classList.add("hidden"); // Hide results div if no results found
+        } else {
+            resultsDiv.classList.remove("hidden"); // Show results div if there are results
+        }
+    });
+
+    loadProfile();
+</script>
+</body>
+</html>

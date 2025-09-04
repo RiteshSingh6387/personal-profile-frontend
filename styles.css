@@ -1,0 +1,255 @@
+/* General layout */
+body {
+  font-family: "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #f4f6f9;
+  color: #333;
+}
+
+
+.header-actions{
+  display: flex;
+  
+}
+.action-buttons{
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#editBtn{
+  background: #2980b9;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+#editBtn:hover {
+  background: #1f6691;
+}
+#saveBtn{
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+h3 {
+  margin-top: 15px;
+  color: #2c3e50;
+  border-left: 4px solid #27ae60;
+  padding-left: 8px;
+}
+
+
+/* Search Bar */
+.search-container {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-left: 200px;
+
+}
+
+#searchBar {
+  width: 250px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  font-size: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+#searchBar:focus {
+  outline: none;
+  border-color: #27ae60;
+  box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+}
+
+/* Buttons */
+.buttons {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #219150;
+}
+
+.btn.edit {
+  background: #2980b9;
+}
+
+.btn.edit:hover {
+  background: #1f6691;
+}
+
+.btn.save {
+  background: #27ae60;
+}
+
+.btn.save:hover {
+  background: #1e8f4c;
+}
+
+.btn.small {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Cards */
+.card {
+  background: white;
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Input groups */
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #27ae60;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(39,174,96,0.2);
+}
+
+/* Projects and Experience */
+.project, .experience {
+  margin: 10px 0;
+  padding: 10px;
+  border-left: 3px solid #27ae60;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+.project strong, .experience strong {
+  color: #2c3e50;
+}
+
+.project a {
+  color: #2980b9;
+  text-decoration: none;
+}
+
+.project a:hover {
+  text-decoration: underline;
+}
+
+/* Delete buttons */
+.delete-skill,
+.delete-project,
+.delete-experience {
+  margin-left: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #e74c3c;
+  transition: 0.2s;
+}
+
+.delete-skill:hover,
+.delete-project:hover,
+.delete-experience:hover {
+  transform: scale(1.2);
+}
+
+
+.search-container {
+  position: relative;
+  display: inline-block;
+  width: 300px; /* adjust size */
+}
+
+#searchBar {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.results {
+  position: absolute;
+  top: 100%; /* directly below search bar */
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 10px;
+  text-align: left;
+}
+
+.results h3 {
+  margin: 8px 0 4px;
+  font-size: 14px;
+  color: #333;
+}
+
+.results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.results li {
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.results li:hover {
+  background-color: #f2f2f2;
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+
+
+
+
